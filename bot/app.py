@@ -2,7 +2,7 @@ from pymessenger.bot import Bot
 from flask import Flask,request
 import os
 import json
-from .spongebob_memes import find_meme
+from .spongebob_memes import find_meme,SearchQueryNotValidError
 
 '''load secret tokens(.env file is not uploaded for preventing revealing the secret tokens inside, hence setting environment variables on cloud platform is a must):
 from dotenv import load_dotenv
@@ -35,7 +35,11 @@ def webhook():
             if msg:=messaging.get('message'):
                 if msg_text:=msg.get('text'):
                     print('get text:',msg_text)
-                    meme_url=find_meme(msg_text)
+                    try:
+                        meme_url=find_meme(msg_text)
+                    except SearchQueryNotValidError as e:
+                        print(e.__class__,":",e)
+                        meme_url=None
                     if meme_url:
                         print(f'found meme at {meme_url}')
                         bot.send_image_url(sender_id,meme_url)
