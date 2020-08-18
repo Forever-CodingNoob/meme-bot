@@ -33,13 +33,14 @@ def webhook():
             sender_id = messaging['sender']['id']
             recipient_id = messaging['recipient']['id']
             if msg:=messaging.get('message'):
-                msg_text=msg['text']
-                meme_url=find_meme(msg_text)
-                if meme_url:
-                    print(f'found meme at {meme_url}')
-                    bot.send_image_url(recipient_id,meme_url)
-                else:
-                    print('meme not found!')
+                if msg_text:=msg.find('text'):
+                    print('get text:',msg_text)
+                    meme_url=find_meme(msg_text)
+                    if meme_url:
+                        print(f'found meme at {meme_url}')
+                        bot.send_image_url(recipient_id,meme_url)
+                    else:
+                        print('meme not found!')
     return 'finished!',200
 
 #only for check
