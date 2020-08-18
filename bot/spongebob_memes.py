@@ -32,4 +32,4 @@ def find_meme(text):
             return meme_url
     return None
 
-#find_meme('難道說我的表情還不夠確定嗎?')
+#find_meme('我警告你')

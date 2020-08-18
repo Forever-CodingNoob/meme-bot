@@ -29,11 +29,11 @@ def webhook():
     data=json.loads(request.data)
     print('parsed messege:\n',json.dumps(data, indent=4, sort_keys=True))
     for entry in data.get('entry'):
-        for messaging in entry.get('messaging'):
-            sender_id = messaging['sender']['id']
-            recipient_id = messaging['recipient']['id']
-            if msg:=messaging.get('message'):
-                if msg_text:=msg.get('text'):
+        for message in entry.get('messaging'):
+            if message.get('message'):
+                sender_id = message['sender']['id']
+                recipient_id = message['recipient']['id']
+                if msg_text:=message['message'].get('text'):
                     print('get text:',msg_text)
                     try:
                         meme_url=find_meme(msg_text)
@@ -45,6 +45,7 @@ def webhook():
                         bot.send_image_url(sender_id,meme_url)
                     else:
                         print('meme not found!')
+    print('finished!')
     return 'finished!',200
 
 #only for check
