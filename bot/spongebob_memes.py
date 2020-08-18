@@ -18,7 +18,7 @@ def find_meme(text):
         url='https://forum.gamer.com.tw/C.php?bsn=60076&snA=5491441'
         response=requests.get(url+f"&to={floor}")
         tree=etree.HTML(response.text)
-        xpath=f'//font[contains(translate(@color, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"#ff0000") and normalize-space()="{text}"][1]/ancestor::div[position() = 1][1]/following-sibling::div//a[contains(@class,"photoswipe-image")][1]'
+        xpath=f'//div[font[contains(translate(@color, "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz"),"#ff0000")] and normalize-space()="{text}"][1]/following-sibling::div//a[contains(@class,"photoswipe-image")][1]'
         print(xpath)
         title = tree.xpath(xpath)
         #print(repr(etree.tostring(title[0],method='text',encoding='utf-8').decode('utf-8')))
