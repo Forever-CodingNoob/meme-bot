@@ -1,5 +1,5 @@
-# 原圖支援
-<em style="color:FF0000;">目前只支援<span style="font-size:5em;">高畫質</span>海綿寶寶梗圖</em>
+# 膏樺職原圖支援
+<strong style="color:FF0000;">目前只支援<span style="font-size:5em;">高畫質</span>海綿寶寶梗圖</strong>
 ## 梗圖清單
 * [海綿寶寶](https://forum.gamer.com.tw/C.php?bsn=60076&snA=5491441)
 ## 使用
