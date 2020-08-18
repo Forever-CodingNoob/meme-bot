@@ -13,7 +13,7 @@ VERIFICATION_TOKEN=os.environ['VERIFICATION_TOKEN']
 app=Flask(__name__)
 bot=Bot(PAGE_ACCESS_TOKEN)
 
-@app.route('/callback',methods=('POST',))
+@app.route('/callback',methods=('GET',))
 def verify():
     print('query strings:',request.args)
     return 'hola'
