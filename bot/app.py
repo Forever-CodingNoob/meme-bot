@@ -16,7 +16,11 @@ bot=Bot(PAGE_ACCESS_TOKEN)
 @app.route('/callback',methods=('GET',))
 def verify():
     print('query strings:',request.args)
-    return 'hola'
+    if request.args.get('hub.mode')=='subscribe' and request.args.get('hub.challenge'):
+        if request.args.get('hub.verify_token')==VERIFICATION_TOKEN:
+            return request.args["hub.challenge"], 200
+        return 'verification_token mismatch!',403
+    return 'hola',200
 
 
 #only for check
