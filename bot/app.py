@@ -33,7 +33,7 @@ def webhook():
             sender_id = messaging['sender']['id']
             recipient_id = messaging['recipient']['id']
             if msg:=messaging.get('message'):
-                if msg_text:=msg.find('text'):
+                if msg_text:=msg.get('text'):
                     print('get text:',msg_text)
                     meme_url=find_meme(msg_text)
                     if meme_url:
