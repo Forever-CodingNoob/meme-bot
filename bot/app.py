@@ -39,7 +39,7 @@ def webhook():
                     if msg_text=="ㄛㄛ":
                         bot.send_text_message(sender_id,msg_text)
                         continue
-                    Meme.send_meme(sender_id,msg_text)
+                    Meme(sender_id,msg_text).send_meme()
     print('finished!')
     return 'finished!',200
 
