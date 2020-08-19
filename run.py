@@ -1,3 +1,3 @@
-from bot import app
+from bot import app,io
 if __name__=='__main__':
-    app.run()
+    io.run(app)

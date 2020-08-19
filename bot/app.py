@@ -1,13 +1,16 @@
 from pymessenger.bot import Bot
-from flask import Flask,request
+from flask import Flask,request,render_template
+from flask_socketio import SocketIO,send,emit
 import os
 import json
-from .spongebob_memes import find_meme,SearchQueryNotValidError
+from .bot_react import MemeBot,MemeSOCKET
 from threading import Thread
 
 '''load secret tokens(.env file is not uploaded for preventing revealing the secret tokens inside, hence setting environment variables on cloud platform is a must):
+'''
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=os.path.join(os.path.abspath(__file__),'..\\..\\.env'))
+'''
 '''
 
 PAGE_ACCESS_TOKEN=os.environ['PAGE_ACCESS_TOKEN']
@@ -15,6 +18,8 @@ VERIFICATION_TOKEN=os.environ['VERIFICATION_TOKEN']
 
 app=Flask(__name__)
 bot=Bot(PAGE_ACCESS_TOKEN)
+io=SocketIO(app=app,logger=True,engineio_logger=False,async_mode='eventlet')
+app.config['DEBUG']=True
 
 @app.route('/callback',methods=('GET',))
 def verify():
@@ -39,33 +44,27 @@ def webhook():
                     if msg_text=="ㄛㄛ":
                         bot.send_text_message(sender_id,msg_text)
                         continue
-                    Meme(sender_id,msg_text).send_meme()
+                    MemeBot(msg_text,bot=bot,sender_id=sender_id).send_meme()
     print('finished!')
     return 'finished!',200
 
-class Meme:
-    def __init__(self,sender_id,meme_text):
-        self.sender_id=sender_id
-        self.meme_text=meme_text
 
-    def send_meme(self):
-        thread=Thread(target=self.__get_meme__)
-        thread.start()
-        print('start to find meme...')
-        return "started"
-    def __get_meme__(self):
-        try:
-            meme_url = find_meme(self.meme_text)
-        except SearchQueryNotValidError as e:
-            print(e.__class__, ":", e)
-            meme_url = None
-        self.meme_url=meme_url
-        if meme_url:
-            print(f'found meme at {meme_url}')
-            bot.send_image_url(self.sender_id, meme_url)
-        else:
-            print('meme not found!')
-
+'''gui in browser'''
+@app.route('/findmemes')
+def find_meme_gui():
+    return render_template('gui.html')
+@io.on('connect')
+def on_connect():
+    print('socket connected!')
+@io.on('disconnect')
+def on_disconnect():
+    print('socket disconnected!')
+@io.on('find_meme')
+def on_find_meme(msg):
+    print('socket received:',msg)
+    meme_text=msg['data']
+    MemeSOCKET(meme_text,socket=io,session_id=request.sid).send_meme()
+    emit('system_msg',{'data':'loading.......'})
 
 #only for check
 @app.route('/')
@@ -84,4 +83,3 @@ def start_task():
     thread.start()
     return 'started'
 
-#print(Meme(2323,'派欸').send_meme())

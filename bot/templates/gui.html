@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Find Meme</title>
+        <link type="text/css" href="./gui.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha512-v8ng/uGxkge3d1IJuEo6dJP8JViyvms0cly9pnbfRxT6/31c3dRWxIiwGnMSWwZjHKOuY3EVmijs7k1jz/9bLA==" crossorigin="anonymous"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div id="meme-img">
+        </div>
+        <div id="notifications">
+        </div>
+        <form id="find-meme" method="post">
+            <div>
+                <label for="meme-name">enter ur meme here:</label>
+                <input id="meme-name" name="meme_name" type="text"/>
+            </div>
+            <div>
+                <button id="meme-submit-btn">give me memeee</button>
+            </div>
+
+        </form>
+        <script>
+            $(document).ready(function(){
+                console.log('ready');
+                var socket = io.connect('http://' + document.domain + ':' + location.port + '/');
+                $('#meme-submit-btn').on( 'click',function(event){
+                    event.preventDefault();
+                    const meme_text = $('#meme-name').val();
+                    //alert($('#meme-name').val());
+                    socket.emit('find_meme',{data:meme_text});
+
+                });
+                socket.on('meme_result', function(msg){
+                    alert('received meme from server');
+                    $('#notifications').html($('#notifications').html()+"<br>"+msg['data']);
+                });
+                socket.on('system_msg', function(msg){
+                    alert('received msg from server');
+                    $('#notifications').html($('#notifications').html()+"<br>"+msg['data']);
+                });
+            });
+
+
+        </script>
+    </body>
+</html>
