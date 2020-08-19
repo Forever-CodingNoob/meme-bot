@@ -25,7 +25,7 @@
         <script>
             $(document).ready(function(){
                 console.log('ready');
-                var socket = io.connect('http://' + document.domain + ':' + location.port + '/');
+                var socket = io.connect('https://' + document.domain + ':' + location.port + '/');
                 $('#meme-submit-btn').on( 'click',function(event){
                     event.preventDefault();
                     const meme_text = $('#meme-name').val();
