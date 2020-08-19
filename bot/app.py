@@ -7,10 +7,8 @@ from .bot_react import MemeBot,MemeSOCKET
 from threading import Thread
 
 '''load secret tokens(.env file is not uploaded for preventing revealing the secret tokens inside, hence setting environment variables on cloud platform is a must):
-'''
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=os.path.join(os.path.abspath(__file__),'..\\..\\.env'))
-'''
 '''
 
 PAGE_ACCESS_TOKEN=os.environ['PAGE_ACCESS_TOKEN']
