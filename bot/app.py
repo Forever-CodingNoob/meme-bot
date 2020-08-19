@@ -35,6 +35,9 @@ def webhook():
                 recipient_id = message['recipient']['id']
                 if msg_text:=message['message'].get('text'):
                     print('get text:',msg_text)
+                    if msg_text=="ㄛㄛ":
+                        bot.send_text_message(sender_id,msg_text)
+                        continue
                     try:
                         meme_url=find_meme(msg_text)
                     except SearchQueryNotValidError as e:
