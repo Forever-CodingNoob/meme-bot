@@ -13,6 +13,8 @@ def find_all_meme_name():
         for title in titles:
             print(etree.tostring(title,method='text',encoding='utf-8').decode('utf-8'))
             # print(etree.tostring(title,encoding='utf-8').decode('utf-8'))
+def get_all_memes_with_url():
+    return {}
 class SearchQueryNotValidError(Exception):
     pass
 def find_meme(text):
