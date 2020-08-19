@@ -17,7 +17,8 @@ VERIFICATION_TOKEN=os.environ['VERIFICATION_TOKEN']
 app=Flask(__name__)
 bot=Bot(PAGE_ACCESS_TOKEN)
 io=SocketIO(app=app,logger=True,engineio_logger=False,async_mode='eventlet')
-app.config['DEBUG']=True
+#app.config['DEBUG']=True
+app.jinja_env.globals.update(env_var=lambda key:os.environ.get(key.upper()))
 
 @app.route('/callback',methods=('GET',))
 def verify():
