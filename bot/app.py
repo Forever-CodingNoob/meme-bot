@@ -65,7 +65,7 @@ def on_find_meme(msg):
     MemeSOCKET(meme_text,socket=io,session_id=request.sid).send_meme()
     emit('system_msg',{'data':'loading.......'})
 
-@app.route('threads')
+@app.route('/threads')
 def get_all_threads():
     return print_all_threads()
 #only for check
