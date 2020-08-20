@@ -34,7 +34,7 @@
                 });
                 socket.on('meme_result', function(msg){
                     alert('received meme from server');
-                    var img='<img src="{0}">'.format(msg['data']);
+                    var img='<img src="'+msg['data']+'">';
                     $('#meme-img').html(img);
                 });
                 socket.on('system_msg', function(msg){
