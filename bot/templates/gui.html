@@ -3,15 +3,13 @@
     <head>
         <meta charset="UTF-8">
         <title>Find Meme</title>
-        <link type="text/css" href="./gui.css">
+        <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='gui.css')}}">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" integrity="sha512-v8ng/uGxkge3d1IJuEo6dJP8JViyvms0cly9pnbfRxT6/31c3dRWxIiwGnMSWwZjHKOuY3EVmijs7k1jz/9bLA==" crossorigin="anonymous"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
-        <div id="meme-img">
-        </div>
-        <div id="notifications">
-        </div>
+        <div id="meme-img"></div>
+        <div id="notifications"></div>
         <form id="find-meme" method="post">
             <div>
                 <label for="meme-name">enter ur meme here:</label>
@@ -36,15 +34,19 @@
                 });
                 socket.on('meme_result', function(msg){
                     alert('received meme from server');
-                    $('#notifications').html($('#notifications').html()+"<br>"+msg['data']);
+                    var img='<img src="{0}">'.format(msg['data']);
+                    $('#meme-img').html(img);
                 });
                 socket.on('system_msg', function(msg){
                     alert('received msg from server');
-                    $('#notifications').html($('#notifications').html()+"<br>"+msg['data']);
+                    var notify_div = $('#notifications');
+                    if (notify_div.html()!=""){ notify_div.html(notify_div.html()+"<br>"); }
+                    var new_span='<span class="msg">'+msg['data']+'</span>'
+                    $('#notifications').html($('#notifications').html()+new_span);
                 });
             });
-
-
+            function clear_notification_div(){ $('#notifications').html(''); }
+            function clear_img(){ $('#meme-img').html(''); }
         </script>
     </body>
 </html>

@@ -1,0 +1,35 @@
+#meme-img{
+    padding: 25px 0px;
+    text-align: center;
+}
+#meme-img img{
+    width:80%;
+    height:auto;
+}
+span .msg{
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 10px;
+    border: hidden;
+    background-color: #8affa9;
+    margin: 5px 5px;
+    font-size: 1.5em;
+}
+#find-meme div{
+    text-align:center;
+    margin-bottom :100px;
+    display:block;
+}
+#find-meme input{
+    font-size: 1.25em;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: #a3a3a3 solid 2px;
+}
+#find-meme label{
+    font-size: 2em;
+}
+#meme-submit-btn{
+    font-size: 3em;
+    padding:10px;
+}
