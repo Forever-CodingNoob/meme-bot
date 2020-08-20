@@ -55,7 +55,7 @@ class MemeSOCKET(Meme):
 def print_all_threads():
     log='executing threads:'
     for thread in enumerate():
-        log+="\n\t"+thread
+        log+="\n\t"+repr(thread)
     return log
 def test_send(socket,id):
     import time
