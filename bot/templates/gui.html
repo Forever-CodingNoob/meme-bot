@@ -38,6 +38,7 @@
                     alert('received meme from server');
                     var img='<img src="'+msg['data']+'">';
                     $('#meme-img').html(img);
+                    clear_notification_div();
                 });
                 socket.on('system_msg', function(msg){
                     alert('received msg from server');

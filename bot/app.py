@@ -3,7 +3,7 @@ from flask import Flask,request,render_template
 from flask_socketio import SocketIO,send,emit
 import os
 import json
-from .bot_react import MemeBot,MemeSOCKET
+from .bot_react import MemeBot,MemeSOCKET,print_all_threads
 from threading import Thread
 
 '''load secret tokens(.env file is not uploaded for preventing revealing the secret tokens inside, hence setting environment variables on cloud platform is a must):
@@ -65,6 +65,9 @@ def on_find_meme(msg):
     MemeSOCKET(meme_text,socket=io,session_id=request.sid).send_meme()
     emit('system_msg',{'data':'loading.......'})
 
+@app.route('threads')
+def get_all_threads():
+    return print_all_threads()
 #only for check
 @app.route('/')
 def home():
