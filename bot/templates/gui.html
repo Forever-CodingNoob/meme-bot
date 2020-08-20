@@ -30,6 +30,8 @@
                     const meme_text = $('#meme-name').val();
                     //alert($('#meme-name').val());
                     socket.emit('find_meme',{data:meme_text});
+                    clear_notification_div();
+                    clear_img();
 
                 });
                 socket.on('meme_result', function(msg){
