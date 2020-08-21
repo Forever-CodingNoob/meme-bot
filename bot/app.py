@@ -1,14 +1,29 @@
+async_mode='eventlet'
+if async_mode=='eventlet':
+    import eventlet
+    eventlet.monkey_patch()
+    #make some functions that might block multithreading
+    #such as time.sleep()
+    #to eventlet functions or others, which support concurrent processing
+    #(in this case, time.sleep will be replaced with eventlet.sleep, which will let the main thread do its work to retain multithreading)
+    #In addition, monkey_patching will also change the default function to those supporting concurrent process
+
+
+
+
 from pymessenger.bot import Bot
 from flask import Flask,request,render_template
 from flask_socketio import SocketIO,send,emit
 import os
 import json
 from .bot_react import MemeBot,MemeSOCKET,print_all_threads
-from threading import Thread
+from threading import Thread,enumerate
 
 '''load secret tokens(.env file is not uploaded for preventing revealing the secret tokens inside, hence setting environment variables on cloud platform is a must):
+'''
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=os.path.join(os.path.abspath(__file__),'..\\..\\.env'))
+'''
 '''
 
 PAGE_ACCESS_TOKEN=os.environ['PAGE_ACCESS_TOKEN']
@@ -16,9 +31,10 @@ VERIFICATION_TOKEN=os.environ['VERIFICATION_TOKEN']
 
 app=Flask(__name__)
 bot=Bot(PAGE_ACCESS_TOKEN)
-io=SocketIO(app=app,logger=True,engineio_logger=False,async_mode='eventlet')
+io=SocketIO(app=app,logger=True,engineio_logger=False,async_mode=async_mode)
 #app.config['DEBUG']=True
 app.jinja_env.globals.update(env_var=lambda key:os.environ.get(key.upper()))
+
 
 @app.route('/callback',methods=('GET',))
 def verify():
@@ -67,7 +83,7 @@ def on_find_meme(msg):
 
 @app.route('/threads')
 def get_all_threads():
-    return print_all_threads()
+    return str([i for i in enumerate()])
 #only for check
 @app.route('/')
 def home():
@@ -78,10 +94,18 @@ def home():
 def start_task():
     def sleep():
         import time
+        while True:
+            time.sleep(1)
+            print('done')
+    def sleep_long():
+        import time
         time.sleep(20)
+        #eventlet.sleep(20) #run this instead of above line if without eventlet.monkey_patch()
         print('done')
 
     thread = Thread(target=sleep)
+    #thread=io.start_background_task(target=sleep_long)
     thread.start()
+    print('started')
     return 'started'
 

@@ -1,6 +1,12 @@
 import requests
 from lxml import html,etree
 import time
+from threading import Thread
+from multiprocessing.pool import ThreadPool
+from queue import Queue
+from concurrent.futures import ThreadPoolExecutor,wait,ALL_COMPLETED,as_completed
+import eventlet
+import bot.test as test
 #floors=[1,241,242,243]
 floors=[1,241]
 def find_all_meme_name():
@@ -14,7 +20,7 @@ def find_all_meme_name():
             print(etree.tostring(title,method='text',encoding='utf-8').decode('utf-8'))
             # print(etree.tostring(title,encoding='utf-8').decode('utf-8'))
 def get_all_memes_with_url():
-    return {}
+    pass
 class SearchQueryNotValidError(Exception):
     pass
 def find_meme(text):
@@ -34,7 +40,34 @@ def find_meme(text):
         ancestor_count=0
 
         print('hola')
-        ancestors=tree.xpath(xpath)#from ancestor to descendant
+        #ancestors=tree.xpath(xpath)#from ancestor to descendant
+
+        '''
+        pool=ThreadPool(processes=1)
+        result=pool.apply_async(test.test,args=(None,))
+        ancestors=result.get()
+        print('result',ancestors)
+        '''
+
+        '''
+        ancestors=[]
+        with ThreadPoolExecutor() as executor:
+            future=executor.submit(tree.xpath,xpath)
+            for future in as_completed([future]):
+                ancestors=future.result()
+                break
+        '''
+
+        def FindElementByXpath(q):
+            results=tree.xpath(xpath)
+            q.put(results)
+
+        q=Queue()
+        thread=Thread(target=FindElementByXpath,args=(q,))
+        thread.start()
+        thread.join()
+        ancestors=q.get()
+
         ancestors.reverse()
         print('hola again')
         print('ancestors:',ancestors)
@@ -65,6 +98,7 @@ def find_meme(text):
                     print(f'time spent on floor {floor}:', time.time() - now, 's')
                     return meme_url
         print(f'time spent on floor {floor}:', time.time() - now, 's')
+        eventlet.sleep(0) #temporarily halt the thread and  yield the CPU to allow other waiting tasks to run.
     return None
 
     """
