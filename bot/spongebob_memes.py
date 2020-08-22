@@ -2,10 +2,12 @@ import requests
 from lxml import html,etree
 import time
 from threading import Thread
-from multiprocessing.pool import ThreadPool
+from multiprocessing.pool import ThreadPool,Pool
+from multiprocessing import get_context,set_start_method,Process
 from queue import Queue
-from concurrent.futures import ThreadPoolExecutor,wait,ALL_COMPLETED,as_completed
+from concurrent.futures import ThreadPoolExecutor,wait,ALL_COMPLETED,as_completed,ProcessPoolExecutor
 import eventlet
+from eventlet import tpool
 import bot.test as test
 #floors=[1,241,242,243]
 floors=[1,241]
@@ -58,14 +60,44 @@ def find_meme(text):
                 break
         '''
 
+        '''
         def FindElementByXpath(q):
             results=tree.xpath(xpath)
             q.put(results)
 
         q=Queue()
-        thread=Thread(target=FindElementByXpath,args=(q,))
-        thread.start()
-        thread.join()
+        process=Process(target=FindElementByXpath,args=(q,))
+        process.start()
+        process.join()
+        ancestors=q.get()
+        '''
+        '''
+        ancestors = []
+        with ProcessPoolExecutor() as executor:
+            future = executor.submit(tree.xpath, xpath)
+            print('AEfw')
+            for future in as_completed([future]):
+                ancestors = future.result()
+                break
+        '''
+        '''
+        def FindElementByXpath(q):
+            results = tree.xpath(xpath)
+            q.put(results)
+        set_start_method('spawn')
+        q=Queue()
+        with get_context(method='spawn').Pool() as pool:
+            result = pool.apply_async(FindElementByXpath, args=(q,))
+            pool.close()
+            pool.join()
+            ancestors=q.get()
+            print('result', ancestors)
+        '''
+        q=Queue()
+        def FindElementByXpath(q):
+            results = tree.xpath(xpath)
+            q.put(results)
+        tpool.execute(FindElementByXpath,q)
         ancestors=q.get()
 
         ancestors.reverse()

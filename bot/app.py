@@ -16,7 +16,8 @@ from flask import Flask,request,render_template
 from flask_socketio import SocketIO,send,emit
 import os
 import json
-from .bot_react import MemeBot,MemeSOCKET,print_all_threads
+import bot.bot_react as react
+#from .bot_react import MemeBot,MemeSOCKET,print_all_threads
 from threading import Thread,enumerate
 
 '''load secret tokens(.env file is not uploaded for preventing revealing the secret tokens inside, hence setting environment variables on cloud platform is a must):
@@ -57,7 +58,7 @@ def webhook():
                     if msg_text=="ㄛㄛ":
                         bot.send_text_message(sender_id,msg_text)
                         continue
-                    MemeBot(msg_text,bot=bot,sender_id=sender_id).send_meme()
+                    react.MemeBot(msg_text,bot=bot,sender_id=sender_id).send_meme()
     print('finished!')
     return 'finished!',200
 
@@ -76,12 +77,12 @@ def on_disconnect():
 def on_find_meme(msg):
     print('socket received:',msg)
     meme_text=msg['data']
-    MemeSOCKET(meme_text,socket=io,session_id=request.sid).send_meme()
+    react.MemeSOCKET(meme_text,socket=io,session_id=request.sid).send_meme(notify_regularly=True)
     emit('system_msg',{'data':'loading.......'})
 
 @app.route('/threads')
 def get_all_threads():
-    return str([i for i in enumerate()])
+    return react.print_all_threads()
 #only for check
 @app.route('/')
 def home():
