@@ -15,7 +15,7 @@ class Meme(ABC):
         self.thread=Thread(target=self.__get_meme__)
         self.thread.start()
         if notify_regularly:
-            notify_thread=Thread(target=self.__notify_regularly__)
+            notify_thread=Thread(target=self.__notify_regularly)
             notify_thread.start()
         print('start to find meme...')
         return
@@ -29,54 +29,55 @@ class Meme(ABC):
         self.process_time = time.time() - self.start_time
         if meme_url:
             print(f'found meme at {meme_url}')
-            self.__success__()
+            self._success()
         else:
             print('meme not found!')
-            self.__fail__()
-        self.__react_after__()
-    def __notify_regularly__(self,interval=10):
+            self._fail()
+        self._react_after()
+    def __notify_regularly(self,interval=10):
         eventlet.sleep(interval)
         while self.thread.is_alive():
-            self.__notify__()
+            self._notify()
             eventlet.sleep(interval)
 
     @abstractmethod
-    def __react_after__(self):
+    def _react_after(self):
         pass
     @abstractmethod
-    def __success__(self):
+    def _success(self):
         pass
     @abstractmethod
-    def __fail__(self):
+    def _fail(self):
         pass
     @abstractmethod
-    def __notify__(self):
+    def _notify(self):
         pass
+
 class MemeBot(Meme):
     def __init__(self,meme_text,*args,bot,sender_id,**kwargs):
         super(MemeBot, self).__init__(meme_text,*args,**kwargs)
         self.bot=bot
         self.sender_id=sender_id
-    def __react_after__(self):
+    def _react_after(self):
         pass
-    def __success__(self):
+    def _success(self):
         self.bot.send_image_url(self.sender_id, self.meme_url)
-    def __fail__(self):
+    def _fail(self):
         pass
-    def __notify__(self):
+    def _notify(self):
         pass
 class MemeSOCKET(Meme):
     def __init__(self,meme_text,*args,socket,session_id,**kwargs):
         super(MemeSOCKET, self).__init__(meme_text,*args,**kwargs)
         self.session_id=session_id
         self.socket=socket
-    def __react_after__(self):
+    def _react_after(self):
         self.socket.emit('system_msg',{'data':'execution time: %.3f s'%self.process_time},room=self.session_id)
-    def __success__(self):
+    def _success(self):
         self.socket.emit('meme_result',{'data':self.meme_url},room=self.session_id)
-    def __fail__(self):
+    def _fail(self):
         self.socket.emit('system_msg',{'data':'meme not found!'},room=self.session_id)
-    def __notify__(self):
+    def _notify(self):
         self.socket.emit('system_msg',{'data':'loading.............'},room=self.session_id)
 #old test: print(Meme(2323,'派欸').send_meme())
 
@@ -86,13 +87,15 @@ def print_all_threads():
         log+="\t<li>"+thread.getName()+"</li>\n"
     log+='</ul>\n'
     return log
-def test_send(socket,id):
+
+'''test functions'''
+def _test_send(socket,id):
     import time
     time.sleep(30)
     socket.emit('system_msg',{'data':'hihihi!'},room=id)
 
 
-def hola():
+def _hola():
     while True:
         time.sleep(1)
         print('hi')
