@@ -21,8 +21,10 @@ import bot.bot_react as react
 from threading import Thread,enumerate
 
 '''load secret tokens(.env file is not uploaded for preventing revealing the secret tokens inside, hence setting environment variables on cloud platform is a must):
+'''
 from dotenv import load_dotenv
 load_dotenv(dotenv_path=os.path.join(os.path.abspath(__file__),'..\\..\\.env'))
+'''
 '''
 
 PAGE_ACCESS_TOKEN=os.environ['PAGE_ACCESS_TOKEN']
@@ -83,6 +85,20 @@ def on_find_meme(msg):
 @app.route('/threads')
 def get_all_threads():
     return react.print_all_threads()
+
+
+
+@app.route('/0.9bar')
+def secret():
+    return render_template('howmuchis0point9bar.html')
+
+
+
+
+
+
+
+
 #only for check
 @app.route('/')
 def home():
